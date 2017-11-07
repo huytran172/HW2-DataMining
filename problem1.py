@@ -56,7 +56,6 @@ def elo_rating(W, n_player, K= 16.):
 
     # initialize the ratings of all players with 400
     R = n_player * [400.] 
-   
     # for each game, update the ratings
     for (A, B) in W:
         # the game result: player A (win), player B (loss)

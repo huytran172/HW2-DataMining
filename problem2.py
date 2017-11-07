@@ -18,7 +18,7 @@ def import_W(filename ='ncaa_results.csv'):
     '''
     #########################################
     ## INSERT YOUR CODE HERE
-    W = np.genfromtxt(filename, delimiter=',')
+    W = np.genfromtxt(filename, dtype='int', delimiter=',')
     #########################################
     return W
 
@@ -33,9 +33,8 @@ def import_team_names(filename ='ncaa_teams.txt'):
     '''
     #########################################
     ## INSERT YOUR CODE HERE
-
-
-
+    with open(filename) as f:
+        team_names = f.read().splitlines()
     #########################################
     return team_names
 
@@ -61,12 +60,23 @@ def team_rating(resultfile = 'ncaa_results.csv',
     '''
     #########################################
     ## INSERT YOUR CODE HERE
+    W = import_W(resultfile)
+    team_names = import_team_names(teamfile)
+    R = elo_rating(W, len(team_names), K)
+    sorted_team_ids = [i[0] for i in sorted(enumerate(R), key=lambda x: x[1], reverse=True)]
 
+    # {0: name, 1: name, 2: name ...}
+    dict_team_names = {v: k for v, k in enumerate(team_names)}
 
+    # {123: 0, 234: 1 ...}
+    dict_sorted_team_ids = {k: v for v, k in enumerate(sorted_team_ids)}
 
+    # Sort team names based on sorted team id
+    sorted_pair_list = sorted(dict_team_names.items(), key=lambda x: dict_sorted_team_ids.get(x[0]))
 
-
-
+    # Extract list of top_teams and top_ratings
+    top_teams = list(zip(*sorted_pair_list)[1])
+    top_ratings = sorted(R, reverse=True)
 
     #########################################
     return top_teams, top_ratings
