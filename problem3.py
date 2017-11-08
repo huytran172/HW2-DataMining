@@ -27,9 +27,7 @@ class WordCount(MRJob):
         '''
         #########################################
         ## INSERT YOUR CODE HERE
-
-
-
+        yield (in_key, len(in_value))
         #########################################
 
     #----------------------
@@ -46,7 +44,7 @@ class WordCount(MRJob):
         '''
         #########################################
         ## INSERT YOUR CODE HERE
-
+        yield in_key, sum(in_values)
 
         #########################################
 
