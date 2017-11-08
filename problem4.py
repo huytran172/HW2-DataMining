@@ -30,9 +30,13 @@ class MatMul(MRJob):
         '''
         #########################################
         ## INSERT YOUR CODE HERE
-
-
-
+        list = line.split(",")
+        matrix_name = list[0]
+        i = int(list[1])
+        j = int(list[2])
+        v = float(list[3])
+        nr = int(list[4])
+        nc = int(list[5])
         #########################################
         return matrix_name, i,j,v, nr, nc
 
@@ -48,18 +52,17 @@ class MatMul(MRJob):
         '''
         
         # parse one line of text data
-        matrix_name,  i,j,v, nr, nc = self.parse_line(in_value)
+        matrix_name, i, j, v, nr, nc = self.parse_line(in_value)
 
         #########################################
         ## INSERT YOUR CODE HERE
+        if matrix_name == 'A':
+            for index in range(1, nc + 1):
+                yield ('C', i, index), ('A', i, j, v)
 
-
-
-
-
-
-
-
+        if matrix_name == 'B':
+            for index in range(1, nr + 1):
+                yield ('C', index, j), ('B', i, j, v)
         #########################################
 
     #----------------------
@@ -74,15 +77,18 @@ class MatMul(MRJob):
         '''
         #########################################
         ## INSERT YOUR CODE HERE
+        value_from_A = []
+        value_from_B = []
+        for item in in_values:
+            if item[0] == 'A':
+                value_from_A.append(item)
+            elif item[0] == 'B':
+                value_from_B.append(item)
 
-
-
-
-
-
-
-
-
-
+        sum = 0
+        for (_, ar, ac, av) in value_from_A:
+            for (_, br, bc, bv) in value_from_B:
+                sum += av * bv if (ar == bc and ac == br) else 0
+        yield in_key, sum
         #########################################
 
